@@ -24,3 +24,5 @@ cloud:
       auto: false
     s3:
       bucket: ${s3_bucket_name}
+
+gateway-host: ${gateway_host}
