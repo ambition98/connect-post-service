@@ -30,6 +30,5 @@ eureka:
   instance:
     prefer-ip-address: true
     ip-address: ${public_ip}
-#    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
 gateway-host: ${gateway_host}
