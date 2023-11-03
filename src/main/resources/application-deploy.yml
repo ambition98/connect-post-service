@@ -30,5 +30,3 @@ eureka:
   instance:
     prefer-ip-address: true
     ip-address: ${public_ip}
-
-gateway-host: ${gateway_host}
