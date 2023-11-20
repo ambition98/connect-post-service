@@ -4,11 +4,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import xyz.connect.post.web.entity.CommentEntity;
-import xyz.connect.post.web.entity.PostEntity;
+import xyz.connect.post.web.entity.Comment;
+import xyz.connect.post.web.entity.Post;
 
 @Repository
-public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
+public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    Page<CommentEntity> findByPost(PostEntity postEntity, Pageable pageable);
+    Page<Comment> findByPost(Post post, Pageable pageable);
 }

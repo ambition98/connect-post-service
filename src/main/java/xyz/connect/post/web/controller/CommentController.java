@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import xyz.connect.post.util.AccountInfoUtil;
 import xyz.connect.post.web.model.request.CreateComment;
 import xyz.connect.post.web.model.request.UpdateComment;
-import xyz.connect.post.web.model.response.Comment;
+import xyz.connect.post.web.model.response.CommentDto;
 import xyz.connect.post.web.service.CommentService;
 
 @RestController
@@ -30,21 +30,21 @@ public class CommentController {
     private final AccountInfoUtil accountInfoUtil;
 
     @GetMapping("")
-    public ResponseEntity<List<Comment>> getComment(Long postId,
+    public ResponseEntity<List<CommentDto>> getComment(Long postId,
             @PageableDefault(sort = "commentId", direction = Direction.DESC)
             Pageable pageable) {
         return ResponseEntity.ok(commentService.getComments(postId, pageable));
     }
 
     @PostMapping("")
-    public ResponseEntity<Comment> createComment(@RequestBody CreateComment createComment,
+    public ResponseEntity<CommentDto> createComment(@RequestBody CreateComment createComment,
             HttpServletRequest request) {
         return ResponseEntity.ok(
                 commentService.createComment(createComment, accountInfoUtil.getAccountId(request)));
     }
 
     @PatchMapping("/{commentId}")
-    public ResponseEntity<Comment> updateComment(@PathVariable Long commentId,
+    public ResponseEntity<CommentDto> updateComment(@PathVariable Long commentId,
             @RequestBody UpdateComment updateComment, HttpServletRequest request) {
         return ResponseEntity.ok(commentService.updateComment(commentId, updateComment,
                 accountInfoUtil.getAccountId(request)));

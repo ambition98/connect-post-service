@@ -10,11 +10,11 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import xyz.connect.post.util.S3Util;
-import xyz.connect.post.web.entity.CommentEntity;
-import xyz.connect.post.web.entity.PostEntity;
+import xyz.connect.post.web.entity.Comment;
+import xyz.connect.post.web.entity.Post;
 import xyz.connect.post.web.model.request.CreatePost;
-import xyz.connect.post.web.model.response.Comment;
-import xyz.connect.post.web.model.response.Post;
+import xyz.connect.post.web.model.response.CommentDto;
+import xyz.connect.post.web.model.response.PostDto;
 
 @Configuration
 @RequiredArgsConstructor
@@ -27,56 +27,56 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper() {
         modelMapper.getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.STRICT);
-        modelMapper.addConverter(postEntityToPost());
-        modelMapper.addConverter(createPostToPostEntity());
-        modelMapper.addConverter(commentEntityToComment());
+//        modelMapper.addConverter(postEntityToPost());
+//        modelMapper.addConverter(createPostToPostEntity());
+//        modelMapper.addConverter(commentEntityToComment());
 
         return modelMapper;
     }
 
-    private Converter<PostEntity, Post> postEntityToPost() {
+    private Converter<Post, PostDto> postEntityToPost() {
         return new AbstractConverter<>() {
             @Override
-            protected Post convert(PostEntity source) {
+            protected PostDto convert(Post source) {
+                PostDto postDto = new PostDto();
+                postDto.setPostId(source.getPostId());
+                postDto.setAccountId(source.getAccountId());
+                postDto.setContent(source.getContent());
+                postDto.setImages(imageStringToList(source.getImages()));
+                postDto.setCreatedAt(source.getCreatedAt());
+                postDto.setViews(source.getViews());
+                return postDto;
+            }
+        };
+    }
+
+    private Converter<CreatePost, Post> createPostToPostEntity() {
+        return new AbstractConverter<>() {
+            @Override
+            protected Post convert(CreatePost source) {
                 Post post = new Post();
-                post.setPostId(source.getPostId());
-                post.setAccountId(source.getAccountId());
-                post.setContent(source.getContent());
-                post.setImages(imageStringToList(source.getImages()));
-                post.setCreatedAt(source.getCreatedAt());
-                post.setViews(source.getViews());
+                post.setPostId(null);
+                post.setAccountId(null);
+                post.setContent(source.content());
+                if (source.images() != null && !source.images().isEmpty()) {
+                    post.setImages(String.join(";", source.images()));
+                }
                 return post;
             }
         };
     }
 
-    private Converter<CreatePost, PostEntity> createPostToPostEntity() {
+    private Converter<Comment, CommentDto> commentEntityToComment() {
         return new AbstractConverter<>() {
             @Override
-            protected PostEntity convert(CreatePost source) {
-                PostEntity postEntity = new PostEntity();
-                postEntity.setPostId(null);
-                postEntity.setAccountId(null);
-                postEntity.setContent(source.content());
-                if (source.images() != null && !source.images().isEmpty()) {
-                    postEntity.setImages(String.join(";", source.images()));
-                }
-                return postEntity;
-            }
-        };
-    }
-
-    private Converter<CommentEntity, Comment> commentEntityToComment() {
-        return new AbstractConverter<>() {
-            @Override
-            protected Comment convert(CommentEntity source) {
-                Comment comment = new Comment();
-                comment.setCommentId(source.getCommentId());
-                comment.setPostId(source.getPost().getPostId());
-                comment.setAccountId(source.getAccountId());
-                comment.setContent(source.getContent());
-                comment.setCreatedAt(source.getCreatedAt());
-                return comment;
+            protected CommentDto convert(Comment source) {
+                CommentDto commentDto = new CommentDto();
+                commentDto.setCommentId(source.getCommentId());
+                commentDto.setPostId(source.getPost().getPostId());
+                commentDto.setAccountId(source.getAccountId());
+                commentDto.setContent(source.getContent());
+                commentDto.setCreatedAt(source.getCreatedAt());
+                return commentDto;
             }
         };
     }

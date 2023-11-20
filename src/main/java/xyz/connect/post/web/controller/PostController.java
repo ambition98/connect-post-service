@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import xyz.connect.post.util.AccountInfoUtil;
 import xyz.connect.post.web.model.request.CreatePost;
 import xyz.connect.post.web.model.request.UpdatePost;
-import xyz.connect.post.web.model.response.Post;
+import xyz.connect.post.web.model.response.PostDto;
 import xyz.connect.post.web.service.PostService;
 
 @RestController
@@ -31,26 +31,26 @@ public class PostController {
     private final AccountInfoUtil accountInfoUtil;
 
     @PostMapping("")
-    public ResponseEntity<Post> createPost(@Valid @RequestBody CreatePost createPost,
+    public ResponseEntity<PostDto> createPost(@Valid @RequestBody CreatePost createPost,
             HttpServletRequest request) {
         return ResponseEntity.ok(
                 postService.createPost(createPost, accountInfoUtil.getAccountId(request)));
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<Post> getPost(@PathVariable Long postId) {
+    public ResponseEntity<PostDto> getPost(@PathVariable Long postId) {
         return ResponseEntity.ok(postService.getPost(postId));
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Post>> getPosts(
+    public ResponseEntity<List<PostDto>> getPosts(
             @PageableDefault(sort = "postId", direction = Sort.Direction.DESC)
             Pageable pageable) {
         return ResponseEntity.ok(postService.getPosts(pageable));
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long postId,
+    public ResponseEntity<PostDto> updatePost(@PathVariable Long postId,
             @Valid @RequestBody UpdatePost updatePost, HttpServletRequest request) {
         return ResponseEntity.ok(
                 postService.updatePost(postId, updatePost, accountInfoUtil.getAccountId(request)));

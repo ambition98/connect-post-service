@@ -14,7 +14,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @Entity(name = "COMMENT")
 @Data
-public class CommentEntity extends BaseEntity {
+public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,5 +29,5 @@ public class CommentEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "POST_ID", columnDefinition = "BIGINT", nullable = false)
     @ToString.Exclude
-    private PostEntity post;
+    private Post post;
 }
