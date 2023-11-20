@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Entity(name = "POST")
 @Data
-public class PostEntity extends BaseEntity {
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
@@ -33,5 +33,5 @@ public class PostEntity extends BaseEntity {
     private Long views = 0L;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    List<CommentEntity> comments = new ArrayList<>();
+    List<Comment> comments = new ArrayList<>();
 }

@@ -9,11 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import xyz.connect.post.custom_exception.PostApiException;
 import xyz.connect.post.enumeration.ErrorCode;
-import xyz.connect.post.web.entity.CommentEntity;
-import xyz.connect.post.web.entity.PostEntity;
+import xyz.connect.post.web.entity.Comment;
+import xyz.connect.post.web.entity.Post;
 import xyz.connect.post.web.model.request.CreateComment;
 import xyz.connect.post.web.model.request.UpdateComment;
-import xyz.connect.post.web.model.response.Comment;
+import xyz.connect.post.web.model.response.CommentDto;
 import xyz.connect.post.web.repository.CommentRepository;
 
 @Service
@@ -25,59 +25,59 @@ public class CommentService {
     private final PostService postService;
     private final ModelMapper modelMapper;
 
-    public List<Comment> getComments(Long postId, Pageable pageable) {
-        PostEntity postEntity = postService.findPost(postId);
-        List<CommentEntity> commentEntityList = commentRepository.findByPost(postEntity, pageable)
+    public List<CommentDto> getComments(Long postId, Pageable pageable) {
+        Post post = postService.findPost(postId);
+        List<Comment> commentList = commentRepository.findByPost(post, pageable)
                 .getContent();
-        List<Comment> commentList = new ArrayList<>();
+        List<CommentDto> commentDtoList = new ArrayList<>();
 
-        for (CommentEntity entity : commentEntityList) {
-            commentList.add(modelMapper.map(entity, Comment.class));
+        for (Comment entity : commentList) {
+            commentDtoList.add(modelMapper.map(entity, CommentDto.class));
         }
 
-        log.info(postId + "번 Post의 Comment " + commentList.size() + "개 조회 완료");
-        return commentList;
+        log.info(postId + "번 Post의 CommentDto " + commentDtoList.size() + "개 조회 완료");
+        return commentDtoList;
     }
 
-    public Comment createComment(CreateComment createComment, long accountId) {
-        PostEntity postEntity = postService.findPost(createComment.postId());
+    public CommentDto createComment(CreateComment createComment, long accountId) {
+        Post post = postService.findPost(createComment.postId());
 
-        CommentEntity commentEntity = modelMapper.map(createComment, CommentEntity.class);
-        commentEntity.setPost(postEntity);
-        commentEntity.setAccountId(accountId);
-        commentEntity.setContent(createComment.content());
-        CommentEntity resultEntity = commentRepository.save(commentEntity);
+        Comment comment = modelMapper.map(createComment, Comment.class);
+        comment.setPost(post);
+        comment.setAccountId(accountId);
+        comment.setContent(createComment.content());
+        Comment resultEntity = commentRepository.save(comment);
 
-        Comment comment = modelMapper.map(resultEntity, Comment.class);
-        log.info("Comment 등록 완료: " + comment);
-        return comment;
+        CommentDto commentDto = modelMapper.map(resultEntity, CommentDto.class);
+        log.info("CommentDto 등록 완료: " + commentDto);
+        return commentDto;
     }
 
-    public Comment updateComment(Long commentId, UpdateComment updateComment, long accountId) {
-        CommentEntity commentEntity = findComment(commentId);
-        if (commentEntity.getAccountId() != accountId) {
+    public CommentDto updateComment(Long commentId, UpdateComment updateComment, long accountId) {
+        Comment comment = findComment(commentId);
+        if (comment.getAccountId() != accountId) {
             throw new PostApiException(ErrorCode.UNAUTHORIZED);
         }
 
-        commentEntity.setContent(updateComment.content());
-        CommentEntity resultEntity = commentRepository.save(commentEntity);
-        Comment comment = modelMapper.map(resultEntity, Comment.class);
-        log.info("Comment 수정 완료: " + comment);
-        return comment;
+        comment.setContent(updateComment.content());
+        Comment resultEntity = commentRepository.save(comment);
+        CommentDto commentDto = modelMapper.map(resultEntity, CommentDto.class);
+        log.info("CommentDto 수정 완료: " + commentDto);
+        return commentDto;
     }
 
     public void deleteComment(Long commentId, long accountId) {
-        CommentEntity commentEntity = findComment(commentId);
-        if (commentEntity.getAccountId() != accountId) {
+        Comment comment = findComment(commentId);
+        if (comment.getAccountId() != accountId) {
             throw new PostApiException(ErrorCode.UNAUTHORIZED);
         }
 
-        commentRepository.delete(commentEntity);
-        log.info(commentEntity.getPost() + "번 Post 의 " + commentEntity.getCommentId()
-                + "번 Comment 삭제 완료");
+        commentRepository.delete(comment);
+        log.info(comment.getPost() + "번 PostDto 의 " + comment.getCommentId()
+                + "번 CommentDto 삭제 완료");
     }
 
-    public CommentEntity findComment(Long commentId) {
+    public Comment findComment(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new PostApiException(ErrorCode.NOT_FOUND));
     }

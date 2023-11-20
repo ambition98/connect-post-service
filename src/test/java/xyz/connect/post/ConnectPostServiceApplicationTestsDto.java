@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Profile;
 
 @SpringBootTest
 @Profile("develop")
-class ConnectPostServiceApplicationTests {
+class ConnectPostServiceApplicationTestsDto {
 
 	@Test
 	void contextLoads() {

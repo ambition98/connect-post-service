@@ -12,7 +12,7 @@ public enum ErrorCode {
     NOT_SUPPORTED_METHOD(HttpStatus.BAD_REQUEST, "Z003", "지원하지 않는 Http method 입니다."),
     NOT_ALLOWED_ACCESS(HttpStatus.BAD_REQUEST, "Z004", "잘못된 접근입니다."),
 
-    //Post API
+    //PostDto API
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "P001", "리소스에 대한 권한이 없습니다."),
     MAX_UPLOAD_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "P002", "파일 업로드 용량이 초과되었습니다."),
     INVALID_MEDIA_TYPE(HttpStatus.BAD_REQUEST, "P003", "허용되지 않는 이미지 미디어 타입 입니다."),

@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Post {
+public class PostDto {
 
     private Long postId;
     private Long accountId;
